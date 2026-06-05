@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Beneficiario Controlador (Física) - Notaría 129</title>
+    <title>Beneficiario Controlador (Jurídicas) - Notaría 129</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
@@ -24,15 +24,19 @@
         #form-content {
             background-color: white;
             width: 760px; 
-            padding: 15px 35px 25px 35px; 
+            padding: 15px 35px 20px 35px;
             box-shadow: 0 0 15px rgba(0,0,0,0.3);
             box-sizing: border-box;
             margin: 0 auto;
-            position: relative; /* Necesario para la marca de agua */
-            overflow: hidden; /* Evita que la marca de agua se salga de los bordes */
+            position: relative;
         }
 
-        /* MARCA DE AGUA */
+        /* CONTENEDOR PRINCIPAL Y MARCAS DE AGUA */
+        #pagina-principal {
+            position: relative;
+            min-height: 1100px;
+        }
+
         .marca-agua {
             position: absolute;
             top: 50%;
@@ -44,16 +48,12 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            opacity: 0.08; /* Transparencia baja para no estorbar */
+            opacity: 0.08; 
             z-index: 0; 
-            pointer-events: none; /* Permite dar clic a los inputs que están encima */
+            pointer-events: none; 
         }
 
-        /* Asegurar que el contenido esté por encima de la marca de agua */
-        .row, .section-title, .legend-box, .legal-text, .main-header, .signature-section, .form-title {
-            position: relative;
-            z-index: 1;
-        }
+        .content-layer { position: relative; z-index: 1; }
 
         /* ENCABEZADO */
         .main-header {
@@ -61,41 +61,40 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--primary-blue);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
             width: 100%;
         }
 
         .logo-container { width: 85px; display: flex; align-items: center; }
-        .logo-img { width: 75px; height: auto; }
-
+        .logo-img { width: 70px; height: auto; }
         .notary-info { text-align: center; flex-grow: 1; padding: 0 10px; }
-        .notary-info h1 { margin: 0; font-size: 19px; color: var(--primary-blue); }
-        .notary-info h2 { margin: 2px 0; font-size: 15px; font-weight: normal; font-style: italic; }
-        .notary-info h3 { margin: 8px 0 0 0; font-size: 13px; font-weight: bold; text-transform: uppercase; }
+        .notary-info h1 { margin: 0; font-size: 18px; color: var(--primary-blue); }
+        .notary-info h2 { margin: 2px 0; font-size: 14px; font-weight: normal; font-style: italic; }
+        .notary-info h3 { margin: 5px 0 0 0; font-size: 12px; font-weight: bold; text-transform: uppercase; }
 
         .section-title {
             background-color: var(--primary-blue);
             color: white;
             text-align: center;
-            padding: 4px;
+            padding: 3px;
             font-weight: bold;
-            font-size: 12px;
-            margin: 15px 0 8px 0;
+            font-size: 11.5px;
+            margin: 8px 0 4px 0; 
             text-transform: uppercase;
         }
 
-        .row { display: flex; gap: 12px; margin-bottom: 8px; width: 100%; align-items: flex-end; }
+        .row { display: flex; gap: 12px; margin-bottom: 5px; width: 100%; align-items: flex-end; } 
         .field { display: flex; flex-direction: column; flex: 1; }
         .field-row { display: flex; flex-direction: row; align-items: center; gap: 8px; }
 
-        label { font-size: 10px; font-weight: bold; color: #333; margin-bottom: 2px; text-transform: uppercase; white-space: nowrap; }
+        label { font-size: 9.5px; font-weight: bold; color: #333; margin-bottom: 1px; text-transform: uppercase; white-space: nowrap; }
 
         input[type="text"], input[type="date"], input[type="email"], select {
             border: none;
             border-bottom: 1px solid var(--border-color);
-            padding: 3px 0;
-            font-size: 12px;
+            padding: 2px 0;
+            font-size: 11.5px;
             background: transparent;
             outline: none;
             font-family: inherit;
@@ -105,30 +104,74 @@
 
         input[type="radio"] { margin: 0 5px 0 0; cursor: pointer; }
 
-        .legend-box { font-size: 10px; text-align: justify; margin-top: 5px; color: #333; line-height: 1.3; }
-        .legal-text { font-size: 9px; text-align: justify; margin-top: 15px; color: #333; line-height: 1.3; font-style: italic; }
+        .legal-text { font-size: 9.5px; text-align: justify; margin-bottom: 8px; color: #222; line-height: 1.2; } 
+        .legend-box { font-size: 9.5px; text-align: center; margin-top: 3px; margin-bottom: 3px; color: #333; line-height: 1.2; }
+
+        /* TABLA ESTRUCTURA ACCIONARIA */
+        .doc-table { width: 100%; border-collapse: collapse; margin: 3px 0 8px 0; background: white; }
+        .doc-table th, .doc-table td { border: 1px solid var(--border-color); padding: 4px; font-size: 10.5px; text-align: center; }
+        .doc-table th { background: #f2f2f2; font-weight: bold; }
+        .doc-table input { border: none; text-align: center; font-size: 10.5px; }
+
+        .btn-delete { color: #e74c3c; cursor: pointer; font-size: 10px; margin-left: 5px; opacity: 0.7; transition: 0.2s; }
+        .btn-delete:hover { opacity: 1; transform: scale(1.2); }
+
+        /* CLASES PARA EL SALTO DE PÁGINA OCULTO */
+        .salto-pagina {
+            page-break-before: always;
+            padding-top: 40px;
+            position: relative;
+            min-height: 1100px;
+            box-sizing: border-box;
+            background-color: white;
+            overflow: hidden;
+            z-index: 2;
+        }
+        .marca-agua-dinamica { display: none; }
+        .salto-pagina .marca-agua-dinamica {
+            display: block;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 650px; height: 650px;
+            background-image: url('https://i.postimg.cc/gJxG7j25/Logo-Extended-png.png');
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            opacity: 0.08; z-index: 0; pointer-events: none;
+        }
 
         .signature-section {
-            margin-top: 40px;
+            margin-top: 65px; 
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
             page-break-inside: avoid;
         }
 
         .sig-box { width: 350px; text-align: center; }
-        .sig-line { border-top: 1px solid black; margin-top: 40px; padding-top: 5px; font-size: 11px; font-weight: bold; text-transform: uppercase; min-height: 20px; }
+        .sig-line { border-top: 1px solid black; margin-top: 5px; padding-top: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase; min-height: 15px; }
 
+        /* BOTONES FIJOS */
         .controls { position: fixed; left: 15px; top: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-        button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; color: white; }
+        button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; color: white; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .btn-pdf { background-color: #27ae60; }
         .btn-clear { background-color: #e74c3c; }
 
-        .btn-copy-dom { 
+        .btn-action { 
             background-color: #3498db; color: white; padding: 4px 10px; font-size: 10px; 
-            border-radius: 3px; cursor: pointer; margin-top: 5px; align-self: flex-end; display: inline-block;
+            border-radius: 4px; cursor: pointer; border: none; transition: background 0.3s;
+            font-weight: bold;
         }
-
-        .hide-on-pdf { /* Clase para ocultar en PDF */ }
+        .btn-action:hover { background-color: #2980b9; }
+        
+        .btn-copy-dom { 
+            background-color: #3498db; color: white; padding: 4px 10px; font-size: 9px; 
+            border-radius: 4px; cursor: pointer; border: none; align-self: flex-end; display: inline-block;
+            transition: background 0.3s;
+        }
+        .btn-copy-dom:hover { background-color: #2980b9; }
+        
+        .hide-on-pdf { /* Oculto en PDF */ }
     </style>
     <link rel="icon" type="image/png" href="https://i.postimg.cc/3NY9rgmB/Logo-Enhanced.png">
 </head>
@@ -140,200 +183,243 @@
     </div>
 
     <div id="form-content">
-        <!-- MARCA DE AGUA CENTRAL -->
-        <div class="marca-agua"></div>
+        <div id="pagina-principal">
+            <div class="marca-agua"></div>
+            <div class="content-layer">
+                
+                <div class="main-header">
+                    <div class="logo-container">
+                        <img src="https://i.postimg.cc/3NY9rgmB/Logo-Enhanced.png" class="logo-img" alt="Logo" crossorigin="anonymous">
+                    </div>
+                    <div class="notary-info">
+                        <h1>NOTARÍA PÚBLICA 129</h1>
+                        <h2>MAESTRO EN DERECHO JOSÉ GODÍNEZ ARGÜELLO</h2>
+                        <h3>FORMATO BENEFICIARIO CONTROLADOR (PERSONAS JURÍDICAS)</h3>
+                    </div>
+                    <div style="width: 85px;"></div>
+                </div>
 
-        <div class="main-header">
-            <div class="logo-container">
-                <img src="https://i.postimg.cc/3NY9rgmB/Logo-Enhanced.png" class="logo-img" alt="Logo" crossorigin="anonymous">
-            </div>
-            <div class="notary-info">
-                <h1>NOTARÍA PÚBLICA 129</h1>
-                <h2>MAESTRO EN DERECHO JOSÉ GODÍNEZ ARGÜELLO</h2>
-                <h3>FORMATO BENEFICIARIO CONTROLADOR (PERSONAS FÍSICAS)</h3>
-            </div>
-            <div style="width: 85px;"></div>
-        </div>
-        
-        <div class="section-title">DATOS GENERALES</div>
-        
-        <div class="row">
-            <div class="field" style="flex: 1.5;"><label>NOMBRE(S)</label><input type="text" id="input-nombre" oninput="calcularRFCyCURP()"></div>
-            <div class="field"><label>APELLIDO PATERNO</label><input type="text" id="input-paterno" oninput="calcularRFCyCURP()"></div>
-            <div class="field"><label>APELLIDO MATERNO</label><input type="text" id="input-materno" oninput="calcularRFCyCURP()"></div>
-        </div>
+                <div class="legal-text">
+                    En cumplimiento de lo dispuesto en los artículos 3, fracción III, 18, y 33 Bis de la Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita, le manifestamos, bajo protesta de decir verdad, que los Beneficiarios Finales de la persona jurídica aquí descrita y en consecuencia quienes ejercen un control efectivo en última instancia de dicha persona son los que se detallan en el presente cuadro, proporcionándole la documentación soporte necesaria para acreditar su identidad, nacionalidad, porcentaje de participación, medio de control y beneficio económico:
+                </div>
 
-        <div class="row">
-            <div class="field"><label>ALIAS</label><input type="text"></div>
-            <div class="field"><label>FECHA DE NACIMIENTO</label><input type="date" id="input-fecha" onchange="calcularRFCyCURP()"></div>
-            <div class="field" style="flex: 0.5;"><label>SEXO</label>
-                <select id="input-sexo" onchange="calcularRFCyCURP()">
-                    <option value=""></option>
-                    <option value="H">HOMBRE</option>
-                    <option value="M">MUJER</option>
-                </select>
-            </div>
-        </div>
+                <div class="row">
+                    <div class="field" style="flex: 2;"><label>NOMBRE DE LA SOCIEDAD:</label><input type="text" id="input-sociedad"></div>
+                    <div class="field"><label>RFC:</label><input type="text" style="text-transform: uppercase;"></div>
+                </div>
+                <div class="row">
+                    <div class="field"><label>DOMICILIO:</label><input type="text"></div>
+                </div>
 
-        <div class="row">
-            <div class="field">
-                <label>PAÍS DE ORIGEN</label>
-                <select class="country-select" id="pais-origen"><option value="MÉXICO">MÉXICO</option></select>
-            </div>
-            <div class="field">
-                <label>PAÍS DE NACIONALIDAD(ES)</label>
-                <select class="country-select"><option value="MÉXICO">MÉXICO</option></select>
-            </div>
-            <div class="field">
-                <label>PAÍS / JURISDICCIÓN (RESIDENCIA FISCAL)</label>
-                <select class="country-select"><option value="MÉXICO">MÉXICO</option></select>
-            </div>
-        </div>
+                <!-- CONTENEDOR DE LA TABLA (Mágicamente se mueve a página 2 al imprimir si hay 7 o más) -->
+                <div id="lugar-original-tabla">
+                    <div id="seccion-estructura-accionaria">
+                        <div class="marca-agua-dinamica"></div>
+                        <div class="content-layer">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10px;">
+                                <div class="section-title" style="background-color: transparent; color: var(--primary-blue); font-size: 12.5px; margin: 0; padding: 0;">ESTRUCTURA ACCIONARIA (DATOS POR ACCIONISTA):</div>
+                                <button type="button" class="btn-action hide-on-pdf" onclick="agregarFilaAccionista()">➕ AGREGAR FILA</button>
+                            </div>
+                            
+                            <table class="doc-table">
+                                <thead>
+                                    <tr>
+                                        <th width="25%">ACCIONISTA / SOCIO</th>
+                                        <th width="15%">NACIONALIDAD</th>
+                                        <th width="15%">% PARTICIPACIÓN</th>
+                                        <th width="20%">RFC / CURP</th>
+                                        <th width="25%">DOCUMENTO SOPORTE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-body">
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center;">
+                                                <input type="text" class="input-numerado" placeholder="(1) Nombre" style="flex: 1;">
+                                                <span class="btn-delete hide-on-pdf" title="Eliminar fila" onclick="eliminarFila(this)">❌</span>
+                                            </div>
+                                        </td>
+                                        <td><input type="text" value="Mexicana"></td>
+                                        <td><input type="text" placeholder="%" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(Number(this.value) > 100) this.value = '100';"></td>
+                                        <td><input type="text" style="text-transform: uppercase;"></td>
+                                        <td><input type="text" value="Acta Const. y Constancia de Sit. Fiscal" style="width: 100%; text-align: left; padding: 2px;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="row">
-            <div class="field"><label>CURP O SU EQUIVALENTE EN OTRO PAÍS</label><input type="text" id="input-curp" style="text-transform: uppercase;"></div>
-            <div class="field"><label>RFC O NÚM. DE IDENTIFICACIÓN FISCAL EN EL EXTRANJERO</label><input type="text" id="input-rfc" style="text-transform: uppercase;"></div>
-        </div>
+                <div class="section-title">DATOS DEL REPRESENTANTE / ACCIONISTA MAYORITARIO</div>
+                
+                <div class="row">
+                    <div class="field" style="flex: 1.5;"><label>NOMBRE(S)</label><input type="text" id="input-nombre" oninput="calcularRFCyCURP()"></div>
+                    <div class="field"><label>APELLIDO PATERNO</label><input type="text" id="input-paterno" oninput="calcularRFCyCURP()"></div>
+                    <div class="field"><label>APELLIDO MATERNO</label><input type="text" id="input-materno" oninput="calcularRFCyCURP()"></div>
+                </div>
 
-        <div class="section-title">DATOS DE LA IDENTIFICACIÓN OFICIAL</div>
-        
-        <div class="row">
-            <div class="field">
-                <label>Tipo de identificación</label>
-                <select>
-                    <option value=""></option>
-                    <option>Credencial para Votar con Fotografía (INE)</option>
-                    <option>Pasaporte Vigente</option>
-                    <option>Cédula Profesional</option>
-                    <option>Matrícula Consular</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Autoridad que la emite</label>
-                <select>
-                    <option value=""></option>
-                    <option>Instituto Nacional Electoral (INE)</option>
-                    <option>Secretaría de Relaciones Exteriores (SRE)</option>
-                    <option>Secretaría de Educación Pública (SEP)</option>
-                </select>
-            </div>
-            <div class="field"><label>Número de la identificación</label><input type="text"></div>
-        </div>
+                <div class="row">
+                    <div class="field"><label>ALIAS</label><input type="text"></div>
+                    <div class="field"><label>FECHA DE NACIMIENTO</label><input type="date" id="input-fecha" onchange="calcularRFCyCURP()"></div>
+                    <div class="field" style="flex: 0.5;"><label>SEXO</label>
+                        <select id="input-sexo" onchange="calcularRFCyCURP()">
+                            <option value=""></option>
+                            <option value="H">HOMBRE</option>
+                            <option value="M">MUJER</option>
+                        </select>
+                    </div>
+                </div>
 
-        <div class="row" style="margin-top: 15px; align-items: center; border: 1px solid #eee; padding: 5px;">
-            <div class="field" style="flex: 0.5;"><label style="margin: 0;">ESTADO CIVIL (marcar uno):</label></div>
-            <div class="field-row" style="flex: 2; flex-wrap: wrap;">
-                <label class="field-row" style="cursor: pointer;"><input type="radio" name="ecivil" value="Soltera(o)"> Soltera (o)</label>
-                <label class="field-row" style="cursor: pointer; margin-left: 15px;"><input type="radio" name="ecivil" value="Unión libre"> Unión libre</label>
-                <label class="field-row" style="cursor: pointer; margin-left: 15px; flex: 1;"><input type="radio" name="ecivil" value="Casado"> Casado bajo el régimen de: <input type="text" style="flex: 1; min-width: 120px;"></label>
-            </div>
-        </div>
+                <div class="row">
+                    <div class="field">
+                        <label>PAÍS DE ORIGEN</label>
+                        <select class="country-select"><option value="MÉXICO">MÉXICO</option></select>
+                    </div>
+                    <div class="field">
+                        <label>PAÍS DE NACIONALIDAD(ES)</label>
+                        <select class="country-select"><option value="MÉXICO">MÉXICO</option></select>
+                    </div>
+                    <div class="field">
+                        <label>PAÍS / JURISDICCIÓN (RESIDENCIA FISCAL)</label>
+                        <select class="country-select"><option value="MÉXICO">MÉXICO</option></select>
+                    </div>
+                </div>
 
-        <div class="legend-box" style="text-align: center; margin-top: 10px;">
-            <em>* En el supuesto de estar casado o en unión libre, presentar la siguiente información del cónyuge, concubina o concubinario:</em>
-        </div>
+                <div class="row">
+                    <div class="field"><label>CURP O SU EQUIVALENTE EN OTRO PAÍS</label><input type="text" id="input-curp" style="text-transform: uppercase;"></div>
+                    <div class="field"><label>RFC O NÚM. DE IDENTIFICACIÓN FISCAL (EXTRANJERO)</label><input type="text" id="input-rfc" style="text-transform: uppercase;"></div>
+                </div>
 
-        <div class="section-title">IDENTIFICACIÓN OFICIAL DEL CÓNYUGE, CONCUBINA O CONCUBINARIO</div>
-        
-        <div class="row">
-            <div class="field">
-                <label>Tipo de identificación</label>
-                <select>
-                    <option value=""></option>
-                    <option>Credencial para Votar con Fotografía (INE)</option>
-                    <option>Pasaporte Vigente</option>
-                    <option>Cédula Profesional</option>
-                </select>
-            </div>
-            <div class="field">
-                <label>Autoridad que la emite</label>
-                <select>
-                    <option value=""></option>
-                    <option>INE</option>
-                    <option>SRE</option>
-                    <option>SEP</option>
-                </select>
-            </div>
-            <div class="field"><label>Número de la identificación</label><input type="text"></div>
-        </div>
+                <div class="row" style="margin-top: 10px; align-items: center; border: 1px solid #eee; padding: 4px;">
+                    <div class="field" style="flex: 0.5;"><label style="margin: 0;">ESTADO CIVIL (marcar uno):</label></div>
+                    <div class="field-row" style="flex: 2; flex-wrap: wrap;">
+                        <label class="field-row" style="cursor: pointer;"><input type="radio" name="ecivil" value="Soltera(o)" onchange="toggleConyuge()"> Soltera (o)</label>
+                        <label class="field-row" style="cursor: pointer; margin-left: 15px;"><input type="radio" name="ecivil" value="Unión libre" onchange="toggleConyuge()"> Unión libre</label>
+                        <label class="field-row" style="cursor: pointer; margin-left: 15px; flex: 1;"><input type="radio" name="ecivil" value="Casado" onchange="toggleConyuge()"> Casado bajo régimen de: <input type="text" style="flex: 1; min-width: 100px;"></label>
+                    </div>
+                </div>
 
-        <div class="section-title">DATOS DE CONTACTO</div>
-        
-        <div class="row">
-            <div class="field"><label>Teléfono Casa (Con Lada)</label><input type="text"></div>
-            <div class="field"><label>Teléfono Móvil (Con Lada)</label><input type="text"></div>
-            <div class="field"><label>Teléfono Oficina (Con Lada)</label><input type="text"></div>
-            <div class="field" style="flex: 1.5;"><label>Correo Electrónico</label><input type="email"></div>
-        </div>
+                <div class="section-title">DATOS DE LA IDENTIFICACIÓN OFICIAL</div>
+                
+                <div class="row">
+                    <div class="field">
+                        <label>Tipo de identificación</label>
+                        <select>
+                            <option value=""></option>
+                            <option>Credencial para Votar con Fotografía (INE)</option>
+                            <option>Pasaporte Vigente</option>
+                            <option>Cédula Profesional</option>
+                            <option>Matrícula Consular</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Autoridad que la emite</label>
+                        <select>
+                            <option value=""></option>
+                            <option>Instituto Nacional Electoral (INE)</option>
+                            <option>Secretaría de Relaciones Exteriores (SRE)</option>
+                            <option>Secretaría de Educación Pública (SEP)</option>
+                        </select>
+                    </div>
+                    <div class="field"><label>Número de la identificación</label><input type="text"></div>
+                </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-            <div class="section-title" style="margin: 20px 0 5px 0; width: 100%;">DOMICILIO PARTICULAR</div>
-        </div>
-        
-        <div class="row">
-            <div class="field" style="flex: 2.5;"><label>Calle</label><input type="text" id="p-calle"></div>
-            <div class="field"><label>Número Exterior</label><input type="text" id="p-ext"></div>
-            <div class="field"><label>Número Interior</label><input type="text" id="p-int"></div>
-        </div>
-        <div class="row">
-            <div class="field"><label>Colonia</label><input type="text" id="p-col"></div>
-            <div class="field"><label>CÓDIGO POSTAL</label><input type="text" id="p-cp"></div>
-            <div class="field">
-                <label>Estado</label>
-                <select id="edo-select-1" onchange="actualizarMunicipios(1)"><option value="">Seleccione...</option></select>
-            </div>
-            <div class="field">
-                <label>Alcaldía/Municipio</label>
-                <select id="mun-select-1"><option value="">-- Estado primero --</option></select>
-            </div>
-            <div class="field">
-                <label>País</label>
-                <select class="country-select" id="p-pais"><option value="MÉXICO">MÉXICO</option></select>
-            </div>
-        </div>
+                <!-- CONTENEDOR DEL CÓNYUGE (SE OCULTA SI ES SOLTERO) -->
+                <div id="sec-conyuge">
+                    <div class="legend-box"><em>* Si está casado o en unión libre, presentar información del cónyuge, concubina o concubinario:</em></div>
 
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 10;">
-            <div class="section-title" style="margin: 20px 0 5px 0; width: 100%;">DOMICILIO FISCAL</div>
-            <button type="button" class="btn-copy-dom hide-on-pdf" onclick="copiarDomicilio()" style="position: absolute; right: 0; top: 15px;">⬇ Mismo Domicilio</button>
-        </div>
+                    <div class="section-title">IDENTIFICACIÓN OFICIAL DEL CÓNYUGE, CONCUBINA O CONCUBINARIO</div>
+                    <div class="row">
+                        <div class="field">
+                            <label>Tipo de identificación</label>
+                            <select>
+                                <option value=""></option>
+                                <option>Credencial para Votar con Fotografía (INE)</option>
+                                <option>Pasaporte Vigente</option>
+                                <option>Cédula Profesional</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Autoridad que la emite</label>
+                            <select>
+                                <option value=""></option>
+                                <option>INE</option>
+                                <option>SRE</option>
+                                <option>SEP</option>
+                            </select>
+                        </div>
+                        <div class="field"><label>Número de la identificación</label><input type="text"></div>
+                    </div>
+                </div>
+                
+                <div class="section-title">DATOS DE CONTACTO</div>
+                <div class="row">
+                    <div class="field"><label>Teléfono Casa (Con Lada)</label><input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                    <div class="field"><label>Teléfono Móvil (Con Lada)</label><input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                    <div class="field"><label>Teléfono Oficina (Con Lada)</label><input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                    <div class="field" style="flex: 1.5;"><label>Correo Electrónico</label><input type="email"></div>
+                </div>
 
-        <div class="row">
-            <div class="field" style="flex: 2.5;"><label>Calle</label><input type="text" id="f-calle"></div>
-            <div class="field"><label>Número Exterior</label><input type="text" id="f-ext"></div>
-            <div class="field"><label>Número Interior</label><input type="text" id="f-int"></div>
-        </div>
-        <div class="row">
-            <div class="field"><label>Colonia</label><input type="text" id="f-col"></div>
-            <div class="field"><label>CÓDIGO POSTAL</label><input type="text" id="f-cp"></div>
-            <div class="field">
-                <label>Estado</label>
-                <select id="edo-select-2" onchange="actualizarMunicipios(2)"><option value="">Seleccione...</option></select>
-            </div>
-            <div class="field">
-                <label>Alcaldía/Municipio</label>
-                <select id="mun-select-2"><option value="">-- Estado primero --</option></select>
-            </div>
-            <div class="field">
-                <label>País</label>
-                <select class="country-select" id="f-pais"><option value="MÉXICO">MÉXICO</option></select>
-            </div>
-        </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div class="section-title" style="margin: 10px 0 4px 0; width: 100%;">DOMICILIO PARTICULAR</div>
+                </div>
+                
+                <div class="row">
+                    <div class="field" style="flex: 2.5;"><label>Calle</label><input type="text" id="p-calle"></div>
+                    <div class="field"><label>Número Ext.</label><input type="text" id="p-ext"></div>
+                    <div class="field"><label>Número Int.</label><input type="text" id="p-int"></div>
+                </div>
+                <div class="row">
+                    <div class="field"><label>Colonia</label><input type="text" id="p-col"></div>
+                    <div class="field"><label>CÓDIGO POSTAL</label><input type="text" id="p-cp" maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                    <div class="field">
+                        <label>Estado</label>
+                        <select id="edo-select-1" onchange="actualizarMunicipios(1)"><option value="">Seleccione...</option></select>
+                    </div>
+                    <div class="field">
+                        <label>Alcaldía/Municipio</label>
+                        <select id="mun-select-1"><option value="">-- Estado primero --</option></select>
+                    </div>
+                    <div class="field">
+                        <label>País</label>
+                        <select class="country-select" id="p-pais"><option value="MÉXICO">MÉXICO</option></select>
+                    </div>
+                </div>
 
-        <div class="signature-section">
-            <div class="sig-box">
-                <div class="sig-line" id="texto-firma">(NOMBRE COMPLETO Y FIRMA)</div>
-            </div>
-        </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; position: relative;">
+                    <div class="section-title" style="margin: 10px 0 4px 0; width: 100%;">DOMICILIO FISCAL</div>
+                    <button type="button" class="btn-copy-dom hide-on-pdf" onclick="copiarDomicilio()" style="position: absolute; right: 0; top: 7px;">⬇ Mismo Domicilio</button>
+                </div>
 
-        <div class="legal-text">
-            Artículo 3 fracción III de la Ley Federal para la Prevención e Identificación de Operaciones con Recursos de Procedencia Ilícita.<br>
-            “…Beneficiario Controlador, a la persona física o grupo de personas físicas que:<br>
-            a) Directamente o por medio de alguna persona Cliente o Usuaria obtiene, en última instancia, el beneficio de goce, uso, disfrute, aprovechamiento o disposición del bien o servicio derivado de la realización de un acto u operación con quien realice una Actividad Vulnerable, o<br>
-            b) Ejerce el control efectivo en última instancia de aquella persona moral que, en su carácter de Cliente o Usuaria, lleve a cabo actos u operaciones con quien realice una Actividad Vulnerable, así como las personas por cuenta de quienes celebra alguno de ellos.<br>
-            Se entiende que una persona o grupo de personas controla de manera efectiva en última instancia a una persona moral cuando, a través de la titularidad de valores, por contrato o cualquier otro acto, en términos de las Reglas de Carácter General aplicables, puede:<br>
-            i) Imponer, directa o indirectamente, decisiones en las asambleas generales de accionistas, socios u órganos equivalentes, o nombrar o destituir a la mayoría de los consejeros, administradores o sus equivalentes;<br>
-            ii) Mantener la titularidad de los derechos que permitan, directa o indirectamente, ejercer el voto respecto de más del veinticinco por ciento del capital social, o<br>
-            iii) Dirigir, directa o indirectamente, la administración, la estrategia o las principales políticas de la misma…”
+                <div class="row">
+                    <div class="field" style="flex: 2.5;"><label>Calle</label><input type="text" id="f-calle"></div>
+                    <div class="field"><label>Número Ext.</label><input type="text" id="f-ext"></div>
+                    <div class="field"><label>Número Int.</label><input type="text" id="f-int"></div>
+                </div>
+                <div class="row">
+                    <div class="field"><label>Colonia</label><input type="text" id="f-col"></div>
+                    <div class="field"><label>CÓDIGO POSTAL</label><input type="text" id="f-cp" maxlength="5" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                    <div class="field">
+                        <label>Estado</label>
+                        <select id="edo-select-2" onchange="actualizarMunicipios(2)"><option value="">Seleccione...</option></select>
+                    </div>
+                    <div class="field">
+                        <label>Alcaldía/Municipio</label>
+                        <select id="mun-select-2"><option value="">-- Estado primero --</option></select>
+                    </div>
+                    <div class="field">
+                        <label>País</label>
+                        <select class="country-select" id="f-pais"><option value="MÉXICO">MÉXICO</option></select>
+                    </div>
+                </div>
+
+                <div class="signature-section">
+                    <div class="sig-box">
+                        <div class="sig-line" id="texto-firma">(NOMBRE COMPLETO Y FIRMA DEL REPRESENTANTE)</div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -341,12 +427,123 @@
         // SEGURIDAD
         document.addEventListener('contextmenu', function(event) { event.preventDefault(); });
         document.onkeydown = function(event) {
-            if (event.keyCode == 123 || (event.ctrlKey && event.shiftKey && event.keyCode == 73) || (event.ctrlKey && event.keyCode == 85)) {
-                return false;
-            }
+            if (event.keyCode == 123 || (event.ctrlKey && event.shiftKey && event.keyCode == 73) || (event.ctrlKey && event.keyCode == 85)) return false;
         };
 
-        // LÓGICA DE FIRMA INTELIGENTE (LIMPIA)
+        // OCULTAR CÓNYUGE SI ES SOLTERO
+        function toggleConyuge() {
+            const isSoltero = document.querySelector('input[name="ecivil"][value="Soltera(o)"]').checked;
+            const secConyuge = document.getElementById('sec-conyuge');
+            if (isSoltero) {
+                secConyuge.style.display = 'none';
+            } else {
+                secConyuge.style.display = 'block';
+            }
+        }
+
+        // LÓGICA DE TABLA: AGREGAR, ELIMINAR Y RENUMERAR
+        function actualizarNumerosFila() {
+            const filas = document.querySelectorAll('#tabla-body tr');
+            filas.forEach((fila, index) => {
+                const inputNombre = fila.querySelector('.input-numerado');
+                if(inputNombre) {
+                    inputNombre.placeholder = `(${index + 1}) Nombre`;
+                }
+            });
+        }
+
+        function eliminarFila(btn) {
+            const tbody = document.getElementById('tabla-body');
+            if (tbody.querySelectorAll('tr').length > 1) {
+                btn.closest('tr').remove();
+                actualizarNumerosFila();
+            } else {
+                alert("Debe haber al menos un accionista en la tabla.");
+            }
+        }
+
+        function agregarFilaAccionista() {
+            const tbody = document.getElementById('tabla-body');
+            const rowCount = tbody.querySelectorAll('tr').length + 1;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    <div style="display: flex; align-items: center;">
+                        <input type="text" class="input-numerado" placeholder="(${rowCount}) Nombre" style="flex: 1;">
+                        <span class="btn-delete hide-on-pdf" title="Eliminar fila" onclick="eliminarFila(this)">❌</span>
+                    </div>
+                </td>
+                <td><input type="text" value="Mexicana"></td>
+                <td><input type="text" placeholder="%" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(Number(this.value) > 100) this.value = '100';"></td>
+                <td><input type="text" style="text-transform: uppercase;"></td>
+                <td><input type="text" value="Acta Const. y Constancia de Sit. Fiscal" style="width: 100%; text-align: left; padding: 2px;"></td>
+            `;
+            tbody.appendChild(tr);
+            actualizarNumerosFila();
+        }
+
+        // DATOS MAESTROS ORDENADOS
+        const paises = ["AFGANISTÁN", "ALEMANIA", "ARGENTINA", "AUSTRALIA", "BOLIVIA", "BRASIL", "CANADÁ", "CHILE", "CHINA", "COLOMBIA", "COREA DEL SUR", "COSTA RICA", "CUBA", "ECUADOR", "EL SALVADOR", "ESPAÑA", "ESTADOS UNIDOS", "FRANCIA", "GUATEMALA", "HONDURAS", "INDIA", "ITALIA", "JAPÓN", "NICARAGUA", "PANAMÁ", "PARAGUAY", "PERÚ", "REINO UNIDO", "REPÚBLICA DOMINICANA", "RUSIA", "URUGUAY", "VENEZUELA"];
+        
+        const estadosOrdenados = [
+            "Michoacán", "Jalisco", 
+            "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua", "Coahuila", "Colima", "CDMX", "Durango", "Estado de México", "Guanajuato", "Guerrero", "Hidalgo", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"
+        ];
+
+        const michTop = ["Zamora", "Jacona", "Tangancícuaro", "Chilchota", "Purépero", "Los Reyes", "Ixtlán", "Chavinda", "Ecuandureo", "Morelia", "Uruapan", "Pátzcuaro"];
+        const michTodosOriginal = ["Acuitzio","Aguililla","Álvaro Obregón","Angamacutiro","Apatzingán","Aquila","Ario","Arteaga","Briseñas","Buenavista","Carácuaro","Coahuayana","Coalcomán","Coeneo","Cojumatlán","Contepec","Copándaro","Cotija","Cuitzeo","Charapan","Charo","Cherán","Chinicuila","Chucándiro","Churintzio","Churumuco","Epitacio Huerta","Erongarícuaro","Gabriel Zamora","Hidalgo","Huandacareo","Huaniqueo","Huetamo","Huiramba","Indaparapeo","Irimbo","Jiménez","Jiquilpan","Juárez","Jungapeo","Lagunillas","La Huacana","La Piedad","Lázaro Cárdenas","Madero","Maravatío","Marcos Castellanos","Morelos","Múgica","Nahuatzen","Nocupétaro","Nuevo Parangaricutiro","Nuevo Urecho","Numarán","Ocampo","Pajacuarán","Panindícuaro","Parácuaro","Paracho","Penjamillo","Peribán","Puruándiro","Queréndaro","Quiroga","Sahuayo","San Lucas","Santa Ana Maya","Salvador Escalante","Senguio","Susupuato","Tacámbaro","Tancítaro","Tangamandapio","Tanhuato","Taretan","Tarímbaro","Tepalcatepec","Tingambato","Tingüindín","Tiquicheo","Tlalpujahua","Tlazazalca","Tocumbo","Tumbiscatío","Turicato","Tuxpan","Tuzantla","Tzintzuntzan","Tzitzio","Venustiano Carranza","Villamar","Vista Hermosa","Yurécuaro","Zacapu","Zináparo","Zinapécuaro","Ziracuaretiro","Zitácuaro"];
+        const michResto = michTodosOriginal.filter(m => !michTop.includes(m)).sort();
+
+        const municipios = {
+            "Michoacán": [...michTop, ...michResto],
+            "CDMX": ["Álvaro Obregón","Azcapotzalco","Benito Juárez","Coyoacán","Cuajimalpa","Cuauhtémoc","Gustavo A. Madero","Iztacalco","Iztapalapa","Magdalena Contreras","Miguel Hidalgo","Milpa Alta","Tláhuac","Tlalpan","Venustiano Carranza","Xochimilco"],
+            "Estado de México": ["Toluca", "Ecatepec", "Naucalpan", "Tlalnepantla", "Cuautitlán", "Huixquilucan", "Metepec", "Nezahualcóyotl"],
+            "Jalisco": ["Guadalajara", "Zapopan", "Tlaquepaque", "Tonalá", "Puerto Vallarta"],
+            "Guanajuato": ["León", "Irapuato", "Celaya", "Guanajuato", "San Miguel de Allende"],
+            "Querétaro": ["Querétaro", "San Juan del Río", "Corregidora"]
+        };
+
+        // INICIALIZAR SELECTS
+        document.querySelectorAll('.country-select').forEach(select => {
+            paises.forEach(p => { let opt = document.createElement('option'); opt.value = p; opt.text = p; select.add(opt); });
+        });
+
+        const edoSel1 = document.getElementById('edo-select-1');
+        const edoSel2 = document.getElementById('edo-select-2');
+        estadosOrdenados.forEach(e => { 
+            let o1 = document.createElement('option'); o1.text = e; o1.value = e; edoSel1.add(o1);
+            let o2 = document.createElement('option'); o2.text = e; o2.value = e; edoSel2.add(o2); 
+        });
+
+        function actualizarMunicipios(num) {
+            const edoSel = document.getElementById('edo-select-' + num);
+            const munSel = document.getElementById('mun-select-' + num);
+            munSel.innerHTML = '<option value="">Seleccione...</option>';
+            if(municipios[edoSel.value]) {
+                municipios[edoSel.value].forEach(m => { 
+                    let o = document.createElement('option'); o.text = m; o.value = m; munSel.add(o); 
+                });
+            }
+        }
+
+        // COPIAR DOMICILIO
+        function copiarDomicilio() {
+            document.getElementById('f-calle').value = document.getElementById('p-calle').value;
+            document.getElementById('f-ext').value = document.getElementById('p-ext').value;
+            document.getElementById('f-int').value = document.getElementById('p-int').value;
+            document.getElementById('f-col').value = document.getElementById('p-col').value;
+            document.getElementById('f-cp').value = document.getElementById('p-cp').value;
+            document.getElementById('f-pais').value = document.getElementById('p-pais').value;
+            
+            document.getElementById('edo-select-2').value = document.getElementById('edo-select-1').value;
+            actualizarMunicipios(2);
+            
+            setTimeout(() => {
+                document.getElementById('mun-select-2').value = document.getElementById('mun-select-1').value;
+            }, 50); 
+        }
+
+        // FIRMA INTELIGENTE DIRECTA
         function actualizarFirma() {
             const nom = document.getElementById('input-nombre').value.trim();
             const pat = document.getElementById('input-paterno').value.trim();
@@ -355,26 +552,16 @@
             
             if (nom !== "" && (pat !== "" || mat !== "")) {
                 const nombreCompleto = [nom, pat, mat].filter(Boolean).join(' ').toUpperCase();
-                firmaDOM.innerHTML = nombreCompleto; // Sin la leyenda extra
+                firmaDOM.innerHTML = nombreCompleto;
             } else {
-                firmaDOM.innerHTML = "(NOMBRE COMPLETO Y FIRMA)";
+                firmaDOM.innerHTML = "(NOMBRE COMPLETO Y FIRMA DEL REPRESENTANTE)";
             }
         }
 
-        // LÓGICA GENERADOR DE RFC Y CURP BASE
-        function quitarAcentos(str) {
-            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-        }
-
-        function obtenerVocalInterna(str) {
-            const vocales = str.substring(1).match(/[AEIOU]/);
-            return vocales ? vocales[0] : 'X';
-        }
-
-        function obtenerConsonanteInterna(str) {
-            const consonantes = str.substring(1).match(/[BCDFGHJKLMNPQRSTVWXYZ]/);
-            return consonantes ? consonantes[0] : 'X';
-        }
+        // CALCULAR RFC / CURP
+        function quitarAcentos(str) { return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase(); }
+        function obtenerVocalInterna(str) { const v = str.substring(1).match(/[AEIOU]/); return v ? v[0] : 'X'; }
+        function obtenerConsonanteInterna(str) { const c = str.substring(1).match(/[BCDFGHJKLMNPQRSTVWXYZ]/); return c ? c[0] : 'X'; }
 
         function calcularRFCyCURP() {
             actualizarFirma();
@@ -387,13 +574,10 @@
 
             if (!nom || !pat || !fecha) return;
 
-            // Regla José y María
             let nombres = nom.split(' ');
             if (nombres.length > 1 && (nombres[0] === 'JOSE' || nombres[0] === 'MARIA' || nombres[0] === 'J' || nombres[0] === 'MA')) {
                 nom = nombres[1];
-            } else {
-                nom = nombres[0];
-            }
+            } else { nom = nombres[0]; }
 
             let let1 = pat.charAt(0) || 'X';
             let let2 = obtenerVocalInterna(pat);
@@ -418,110 +602,45 @@
             if (inputCURP.value.length <= 16) inputCURP.value = curpBase;
         }
 
-        // CATÁLOGO DE PAÍSES ORDENADOS (México por defecto)
-        const paises = ["AFGANISTÁN", "ALEMANIA", "ARGENTINA", "AUSTRALIA", "BOLIVIA", "BRASIL", "CANADÁ", "CHILE", "CHINA", "COLOMBIA", "COREA DEL SUR", "COSTA RICA", "CUBA", "ECUADOR", "EL SALVADOR", "ESPAÑA", "ESTADOS UNIDOS", "FRANCIA", "GUATEMALA", "HONDURAS", "INDIA", "ITALIA", "JAPÓN", "NICARAGUA", "PANAMÁ", "PARAGUAY", "PERÚ", "REINO UNIDO", "REPÚBLICA DOMINICANA", "RUSIA", "URUGUAY", "VENEZUELA"];
-        
-        document.querySelectorAll('.country-select').forEach(select => {
-            paises.forEach(p => {
-                let opt = document.createElement('option');
-                opt.value = p;
-                opt.text = p;
-                select.add(opt);
-            });
-        });
-
-        // COPIAR DOMICILIO
-        function copiarDomicilio() {
-            document.getElementById('f-calle').value = document.getElementById('p-calle').value;
-            document.getElementById('f-ext').value = document.getElementById('p-ext').value;
-            document.getElementById('f-int').value = document.getElementById('p-int').value;
-            document.getElementById('f-col').value = document.getElementById('p-col').value;
-            document.getElementById('f-cp').value = document.getElementById('p-cp').value;
-            document.getElementById('f-pais').value = document.getElementById('p-pais').value;
-            
-            const edo1 = document.getElementById('edo-select-1').value;
-            document.getElementById('edo-select-2').value = edo1;
-            
-            actualizarMunicipios(2);
-            
-            const mun1 = document.getElementById('mun-select-1').value;
-            setTimeout(() => {
-                document.getElementById('mun-select-2').value = mun1;
-            }, 50); 
-        }
-
-        // CATÁLOGO COMPLETO DE MUNICIPIOS DE MÉXICO
-        const municipios = {
-            "Michoacán": ["Acuitzio","Aguililla","Álvaro Obregón","Angamacutiro","Angangueo","Apatzingán","Aporo","Aquila","Ario","Arteaga","Briseñas","Buenavista","Carácuaro","Coahuayana","Coalcomán","Coeneo","Cojumatlán de Régules","Contepec","Copándaro","Cotija","Cuitzeo","Charapan","Charo","Chavinda","Cherán","Chilchota","Chinicuila","Chucándiro","Churintzio","Churumuco","Ecuandureo","Epitacio Huerta","Erongarícuaro","Gabriel Zamora","Hidalgo","Huandacareo","Huaniqueo","Huetamo","Huiramba","Indaparapeo","Irimbo","Ixtlán","Jacona","Jiménez","Jiquilpan","Juárez","Jungapeo","Lagunillas","La Huacana","La Piedad","Lázaro Cárdenas","Los Reyes","Madero","Maravatío","Marcos Castellanos","Morelia","Morelos","Múgica","Nahuatzen","Nocupétaro","Nuevo Parangaricutiro","Nuevo Urecho","Numarán","Ocampo","Pajacuarán","Panindícuaro","Parácuaro","Paracho","Pátzcuaro","Penjamillo","Peribán","Purépero","Puruándiro","Queréndaro","Quiroga","Sahuayo","San Lucas","Santa Ana Maya","Salvador Escalante","Senguio","Susupuato","Tacámbaro","Tancítaro","Tangamandapio","Tangancícuaro","Tanhuato","Taretan","Tarímbaro","Tepalcatepec","Tingambato","Tingüindín","Tiquicheo","Tlalpujahua","Tlazazalca","Tocumbo","Tumbiscatío","Turicato","Tuxpan","Tuzantla","Tzintzuntzan","Tzitzio","Uruapan","Venustiano Carranza","Villamar","Vista Hermosa","Yurécuaro","Zacapu","Zamora","Zináparo","Zinapécuaro","Ziracuaretiro","Zitácuaro"],
-            "CDMX": ["Álvaro Obregón","Azcapotzalco","Benito Juárez","Coyoacán","Cuajimalpa de Morelos","Cuauhtémoc","Gustavo A. Madero","Iztacalco","Iztapalapa","La Magdalena Contreras","Miguel Hidalgo","Milpa Alta","Tláhuac","Tlalpan","Venustiano Carranza","Xochimilco"],
-            "Estado de México": ["Acambay","Acolman","Aculco","Almoloya de Alquisiras","Almoloya de Juárez","Almoloya del Río","Amanalco","Amatepec","Amecameca","Apaxco","Atenco","Atizapán","Atizapán de Zaragoza","Atlacomulco","Atlautla","Axapusco","Ayapango","Calimaya","Capulhuac","Coacalco de Berriozábal","Coatepec Harinas","Cocotitlán","Coyotepec","Cuautitlán","Chalco","Chapa de Mota","Chapultepec","Chiautla","Chicoloapan","Chiconcuac","Chimalhuacán","Donato Guerra","Ecatepec de Morelos","Ecatzingo","Huehuetoca","Hueypoxtla","Huixquilucan","Isidro Fabela","Ixtapaluca","Ixtapan de la Sal","Ixtapan del Oro","Ixtlahuaca","Xalatlaco","Jaltenco","Jilotepec","Jilotzingo","Jiquipilco","Jocotitlán","Joquicingo","Juárez","Lerma","Malinalco","Melchor Ocampo","Metepec","Mexicaltzingo","Morelos","Naucalpan de Juárez","Nezahualcóyotl","Nextlalpan","Nicolás Romero","Nopaltepec","Ocoyoacac","Ocuilan","El Oro","Otumba","Otzoloapan","Otzolotepec","Ozumba","Papalotla","La Paz","Polotitlán","Rayón","San Antonio la Isla","San Felipe del Progreso","San Martín de las Pirámides","San Mateo Atenco","San Simón de Guerrero","Santo Tomás","Soyaniquilpan de Juárez","Sultepec","Tecámac","Tejupilco","Temamatla","Temascalapa","Temascalcingo","Temascaltepec","Temoaya","Tenancingo","Tenango del Aire","Tenango del Valle","Teoloyucan","Teotihuacán","Tepetlaoxtoc","Tepetlixpa","Tepotzotlán","Tequixquiac","Texcaltitlán","Texcalyacac","Texcoco","Tezoyuca","Tianguistenco","Timilpan","Tlalmanalco","Tlalnepantla de Baz","Tlatlaya","Toluca","Tonatico","Tultepec","Tultitlán","Valle de Bravo","Villa de Allende","Villa del Carbón","Villa Guerrero","Villa Victoria","Xonacatlán","Zacazonapan","Zacualpan","Zinacantepec","Zumpahuacán","Zumpango","Cuautitlán Izcalli","Valle de Chalco","Luvianos","San José del Rincón","Tonanitla"],
-            "Guanajuato": ["Abasolo","Acámbaro","San Miguel de Allende","Apaseo el Alto","Apaseo el Grande","Atarjea","Celaya","Manuel Doblado","Comonfort","Coroneo","Cortazar","Cuerámaro","Doctor Mora","Dolores Hidalgo","Guanajuato","Huanímaro","Irapuato","Jaral del Progreso","Jerécuaro","León","Moroleón","Ocampo","Pénjamo","Pueblo Nuevo","Purísima del Rincón","Romita","Salamanca","Salvatierra","San Diego de la Unión","San Felipe","San Francisco del Rincón","San José Iturbide","San Luis de la Paz","Santa Catarina","Santa Cruz de Juventino Rosas","Santiago Maravatío","Silao de la Victoria","Tarandacuao","Tarimoro","Tierra Blanca","Uriangato","Valle de Santiago","Victoria","Villagrán","Xichú","Yuriria"],
-            "Jalisco": ["Acatic","Acatlán de Juárez","Ahualulco de Mercado","Amacueca","Amatitán","Ameca","San Juanito de Escobedo","Arandas","El Arenal","Atemajac de Brizuela","Atengo","Atenguillo","Atotonilco el Alto","Atoyac","Autlán de Navarro","Ayotlán","Ayutla","La Barca","Bolaños","Cabo Corrientes","Casimiro Castillo","Cihuatlán","Zapotlán el Grande","Cocula","Colotlán","Concepción de Buenos Aires","Cuautitlán de García Barragán","Cuautla","Cuquío","Chapala","Chimaltitán","Chiquilistlán","Degollado","Ejutla","Encarnación de Díaz","Etzatlán","El Grullo","Guachinango","Guadalajara","Hostotipaquillo","Huejúcar","Huejuquilla el Alto","La Huerta","Ixtlahuacán de los Membrillos","Ixtlahuacán del Río","Jalostotitlán","Jamay","Jesús María","Jilotlán de los Dolores","Jocotepec","Juanacatlán","Juchitlán","Lagos de Moreno","El Limón","Magdalena","Santa María del Oro","La Manzanilla de la Paz","Mascota","Mazamitla","Mexticacán","Mezquitic","Mixtlán","Ocotlán","Ojuelos de Jalisco","Pihuamo","Poncitlán","Puerto Vallarta","Villa Purificación","Quitupan","El Salto","San Cristóbal de la Barranca","San Diego de Alejandría","San Juan de los Lagos","San Julián","San Marcos","San Martín de Bolaños","San Martín Hidalgo","San Miguel el Alto","Gómez Farías","San Sebastián del Oeste","Santa María de los Ángeles","Sayula","Tala","Talpa de Allende","Tamazula de Gordiano","Tapalpa","Tecalitlán","Tecolotlán","Techaluta de Montenegro","Tenamaxtlán","Teocaltiche","Teocuitatlán de Corona","Tepatitlán de Morelos","Tequila","Teuchitlán","Tizapán el Alto","Tlajomulco de Zúñiga","Tlaquepaque","Tolimán","Tomatlán","Tonalá","Tonaya","Tonila","Totatiche","Tototlán","Tuxcacuesco","Tuxcueca","Tuxpan","Unión de San Antonio","Unión de Tula","Valle de Guadalupe","Valle de Juárez","San Gabriel","Villa Corona","Villa Guerrero","Villa Hidalgo","Yahualica","Zacoalco de Torres","Zapopan","Zapotiltic","Zapotitlán de Vadillo","Zapotlán del Rey","Zapotlanejo","San Ignacio Cerro Gordo"],
-            "Aguascalientes": ["Aguascalientes", "Jesús María", "Calvillo"],
-            "Baja California": ["Mexicali", "Tijuana", "Ensenada"],
-            "Baja California Sur": ["La Paz", "Los Cabos"],
-            "Campeche": ["Campeche", "Ciudad del Carmen"],
-            "Chiapas": ["Tuxtla Gutiérrez", "Tapachula", "San Cristóbal"],
-            "Chihuahua": ["Chihuahua", "Ciudad Juárez"],
-            "Coahuila": ["Saltillo", "Torreón"],
-            "Colima": ["Colima", "Manzanillo"],
-            "Durango": ["Durango", "Gómez Palacio"],
-            "Guerrero": ["Chilpancingo", "Acapulco"],
-            "Hidalgo": ["Pachuca", "Tulancingo"],
-            "Morelos": ["Cuernavaca", "Jiutepec"],
-            "Nayarit": ["Tepic", "Bahía de Banderas"],
-            "Nuevo León": ["Monterrey", "San Pedro Garza García"],
-            "Oaxaca": ["Oaxaca de Juárez"],
-            "Puebla": ["Puebla", "Tehuacán"],
-            "Querétaro": ["Querétaro", "San Juan del Río"],
-            "Quintana Roo": ["Cancún", "Playa del Carmen"],
-            "San Luis Potosí": ["San Luis Potosí"],
-            "Sinaloa": ["Culiacán", "Mazatlán"],
-            "Sonora": ["Hermosillo", "Ciudad Obregón"],
-            "Tabasco": ["Villahermosa"],
-            "Tamaulipas": ["Ciudad Victoria", "Reynosa"],
-            "Tlaxcala": ["Tlaxcala"],
-            "Veracruz": ["Xalapa", "Veracruz"],
-            "Yucatán": ["Mérida"],
-            "Zacatecas": ["Zacatecas"]
-        };
-
-        const edoSel1 = document.getElementById('edo-select-1');
-        const edoSel2 = document.getElementById('edo-select-2');
-        
-        Object.keys(municipios).sort().forEach(e => { 
-            let o1 = document.createElement('option'); o1.text = e; o1.value = e; edoSel1.add(o1);
-            let o2 = document.createElement('option'); o2.text = e; o2.value = e; edoSel2.add(o2); 
-        });
-
-        function actualizarMunicipios(num) {
-            const edoSel = document.getElementById('edo-select-' + num);
-            const munSel = document.getElementById('mun-select-' + num);
-            
-            munSel.innerHTML = '<option value="">Seleccione...</option>';
-            if(municipios[edoSel.value]) {
-                municipios[edoSel.value].sort().forEach(m => { 
-                    let o = document.createElement('option'); o.text = m; o.value = m; munSel.add(o); 
-                });
-            }
-        }
-
+        // GENERAR PDF CON NOMENCLATURA PERSONALIZADA Y FECHA FORMATEADA
         function generarPDF() {
             const elementoFormulario = document.getElementById('form-content');
             
-            const nom = document.getElementById('input-nombre').value.trim();
-            const pat = document.getElementById('input-paterno').value.trim();
-            const mat = document.getElementById('input-materno').value.trim();
-            const nombreCompleto = [nom, pat, mat].filter(Boolean).join('_'); 
-            const nombreArchivo = nombreCompleto ? `Beneficiario_Fisica_${nombreCompleto}.pdf` : `Beneficiario_Fisica.pdf`;
+            // CONSTRUIR EL NOMBRE DEL ARCHIVO
+            const soc = document.getElementById('input-sociedad').value.trim().toUpperCase();
+            const nom = document.getElementById('input-nombre').value.trim().toUpperCase();
+            const pat = document.getElementById('input-paterno').value.trim().toUpperCase();
+            const mat = document.getElementById('input-materno').value.trim().toUpperCase();
             
+            const nombreCompleto = [nom, pat, mat].filter(Boolean).join(' ');
+            
+            let partesArchivo = ["BENEFICIARIO CONTROLADOR"];
+            if (soc !== "") partesArchivo.push(soc);
+            if (nombreCompleto !== "") partesArchivo.push(nombreCompleto);
+            
+            const nombreArchivo = partesArchivo.join(' ') + ".pdf";
+            
+            // 1. Ocultar botones
             document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = 'none');
 
+            // 2. Lógica del salto de página invisible
+            const tablaSec = document.getElementById('seccion-estructura-accionaria');
+            const originalPos = document.getElementById('lugar-original-tabla');
+            const rowCount = document.querySelectorAll('#tabla-body tr').length;
+            
+            if (rowCount >= 7) { 
+                tablaSec.classList.add('salto-pagina');
+                elementoFormulario.appendChild(tablaSec); // Lo manda hasta abajo
+            }
+
+            // 3. Procesar inputs visuales y formatear fecha
             const inputsCambiados = [];
             const inputsActivos = elementoFormulario.querySelectorAll('input, select');
 
             inputsActivos.forEach(inp => {
-                if (inp.style.display !== 'none') {
+                if (inp.closest('#sec-conyuge') && document.getElementById('sec-conyuge').style.display === 'none') return;
+
+                if (inp.style.display !== 'none' && !inp.classList.contains('hide-on-pdf')) {
                     const span = document.createElement('span');
                     
                     if (inp.type === 'radio' || inp.type === 'checkbox') {
@@ -533,12 +652,28 @@
                         span.style.display = "inline-block";
                         span.style.transform = "translateY(2px)";
                     } else {
-                        span.innerText = inp.value || " ";
+                        let textValue = inp.value || " ";
+                        
+                        // LÓGICA TRADUCTORA DE FECHAS (2000-06-13 -> 13 JUNIO 2000)
+                        if (inp.type === 'date' && inp.value) {
+                            const parts = inp.value.split('-'); // ["2000", "06", "13"]
+                            if (parts.length === 3) {
+                                const meses = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
+                                textValue = `${parts[2]} ${meses[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
+                            }
+                        }
+
+                        span.innerText = textValue;
                         span.style.borderBottom = "1px solid #bdc3c7";
-                        span.style.fontSize = "12px"; 
+                        span.style.fontSize = "11.5px"; 
                         span.style.width = "100%"; 
                         span.style.minHeight = "15px"; 
                         span.style.display = "inline-block";
+                        
+                        if (inp.closest('td')) {
+                            span.style.borderBottom = "none";
+                            span.style.textAlign = "center";
+                        }
                     }
                     
                     span.style.boxSizing = "border-box";
@@ -548,19 +683,29 @@
             });
 
             const opciones = {
-                margin: [5, 8, 8, 8],
+                margin: [5, 5, 5, 5],
                 filename: nombreArchivo,
-                image: { type: 'jpeg', quality: 1.0 },
+                image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, 
                 jsPDF: { unit: 'mm', format: 'legal', orientation: 'portrait' }
             };
 
+            // 4. Imprimir y Restaurar todo
             html2pdf().set(opciones).from(elementoFormulario).save().then(() => {
                 document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = '');
                 inputsCambiados.forEach(item => { item.padre.replaceChild(item.inputOriginal, item.spanActual); });
+                
+                if (rowCount >= 7) {
+                    tablaSec.classList.remove('salto-pagina');
+                    originalPos.appendChild(tablaSec);
+                }
             }).catch(error => {
                 document.querySelectorAll('.hide-on-pdf').forEach(el => el.style.display = '');
                 inputsCambiados.forEach(item => { item.padre.replaceChild(item.inputOriginal, item.spanActual); });
+                if (rowCount >= 7) {
+                    tablaSec.classList.remove('salto-pagina');
+                    originalPos.appendChild(tablaSec);
+                }
             });
         }
     </script>
